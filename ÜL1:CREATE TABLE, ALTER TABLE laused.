@@ -1,0 +1,44 @@
+USE LOGITpv24baas
+--Category (idCategory, Category_Name)
+CREATE TABLE Category (
+idCategory int PRIMARY KEY IDENTITY(1,1),
+Category_Name varchar(10));
+--Product (idProduct, Name, idCategory, Price)
+INSERT INTO Category 
+values ('elektrooni')
+SELECT * from Category
+ALTER TABLE Category ADD CONSTRAINT Category_Name UNIQUE (Category_Name)
+
+--Product (idProduct, Name, idCategory, Price)
+CREATE TABLE Product(
+idProduct int Primary key IDENTITY (1,1),
+name varchar(10),
+idCategory int, FOREIGN KEY (idCategory) REFERENCES Category (idCategory),
+Price money)
+SELECT *from Product 
+--täidame tabeli
+INSERT INTO Product 
+Values('telefoon', 1,1000)
+--Sale (idSale, idProduct, idCustomer, Count_pr, Date_of_sale)
+CREATE TABLE Sale(
+idSale int PRIMARY KEY IDENTITY(1,1),
+idProduct int,
+idCustomer int,
+FOREIGN KEY (idProduct) REFERENCES Product(idProduct),
+Count int,
+date_of_sale date)
+--tabel customer
+CREATE TABLE Customer(
+idCustomer int PRIMARY KEY IDENTITY(1,1),
+Name varchar(100) not null,
+Contact varchar(100))
+ALTER TABLE Sale ADD CONSTRAINT fk_sale
+FOREIGN KEY (idCustomer) REFERENCES Customer (idCustomer); 
+SELECT * FROM Customer
+
+INSERT INTO Category 
+VALUES('kommid')
+
+INSERT INTO Product
+VALUES('skittles',2,2.50)
+
