@@ -158,4 +158,165 @@ EXEC muudatus 'drop', 'categories', 'testVeerg'
 <img width="499" height="202" alt="{8B9A8D3C-83A7-4762-9C43-5E078B5FFE0A}" src="https://github.com/user-attachments/assets/0fe1012a-7860-4065-8587-80bff48882fd" />
 
 
+```sql
+CREATE DATABASE karolinaulesanne;
 
+USE karolinaulesanne;
+
+CREATE TABLE klient(
+
+Id int PRIMARY KEY IDENTITY(1,1),
+Nimi varchar(30) NOT NULL,
+linn varchar (30),
+vanus int,
+saldo money
+);
+
+INSERT INTO klient
+VALUES ('anna', 'Tallinn', 15, 200);
+
+SELECT * FROM klient
+
+--Kuva kliendid
+--Protseduur, mis tagastab kõik kliendid või valitud väljad (nimi, linn). 
+
+CREATE PROCEDURE kuvakliendid
+AS
+BEGIN
+    SELECT Nimi, linn FROM klient;
+END;
+
+EXEC kuvakliendid;
+
+--Kliendi lisamise protseduur
+--Protseduur, mis lisab uue kliendi (nimi, linn, vanus, saldo). 
+
+CREATE PROCEDURE lisaKlient
+    @nimi varchar (25),
+    @linn varchar (25),
+    @vanus int,
+    @saldo money 
+AS
+BEGIN
+    INSERT INTO klient
+    VALUES (@nimi, @linn, @vanus, @saldo);
+
+END;
+
+EXEC lisaKlient 'Milana', 'Tallinn', 26, 3456;
+
+SELECT * FROM klient;
+
+--Muuda kliendi andmeid
+--Protseduur, mis uuendab näiteks linna või saldo väärtust ID alusel. 
+
+CREATE PROCEDURE muudaKlient
+    @id int,
+    @linn varchar(25),
+    @saldo money 
+AS
+BEGIN
+    UPDATE klient SET linn = @linn, saldo = @saldo 
+    WHERE Id = @id;
+END;
+
+EXEC muudaKlient 1, 'Rakvere', 790;
+
+--Kustuta klient
+--Protseduur, mis kustutab kliendi ID järgi. 
+
+CREATE PROCEDURE kustutaKlient
+    @id int
+AS
+BEGIN
+    DELETE FROM klient
+    WHERE Id = @id;
+END;
+
+EXEC kustutaKlient 6;
+
+SELECT * FROM klient;
+
+--Otsi klienti
+--Protseduur, mis otsib nime või esimese tähe järgi. 
+
+CREATE PROCEDURE otsiKlient
+    @taht varchar(1)
+AS
+BEGIN
+	SELECT * FROM klient
+    WHERE Nimi LIKE @taht + '%';
+END;
+
+EXEC otsiKlient 'K';
+
+--Saldo min/max
+--Protseduur, mis leiab väikseima ja suurima saldo (OUTPUT parameetrid). 
+
+CREATE PROCEDURE minmaxSaldo
+    @minSaldo MONEY OUTPUT,
+    @maxSaldo MONEY OUTPUT
+AS
+BEGIN
+    SELECT 
+        @minSaldo = min (saldo),
+        @maxSaldo = max (saldo)
+    FROM klient;
+END;
+
+----kutse
+
+DECLARE @min MONEY, @max MONEY;
+
+EXEC minmaxSaldo @minSaldo=@min OUTPUT, @maxSaldo=@max OUTPUT;
+
+PRINT 'Min saldo = ' + CONVERT(varchar, @min);
+PRINT 'Max saldo = ' + CONVERT(varchar, @max);
+
+--Tingimuslause kasutamine (CASE / IF)
+
+CREATE PROCEDURE kliendiStaatus
+    @hind MONEY  
+AS
+BEGIN
+    SELECT
+        Nimi,
+        saldo,
+        CASE 
+        WHEN saldo > @hind THEN 'Hea klient'
+        ELSE 'Tavaklient'
+        END AS staatus
+    FROM klient;
+END;
+
+EXEC kliendiStaatus 100;
+
+--Veeru haldus
+--Protseduur, mis lisab või kustutab veeru (nt email) kasutades dünaamilist SQL-i.
+
+CREATE PROCEDURE muudatus
+    @tegevus varchar(10),       
+    @tabelinimi varchar(25),    
+    @veerunimi varchar(25),     
+    @tyyp varchar(25) = NULL    
+AS
+BEGIN
+    DECLARE @sqltegevus varchar(max);
+
+    SET @sqltegevus = CASE 
+        WHEN @tegevus = 'add' THEN 
+            CONCAT('ALTER TABLE ', @tabelinimi, ' ADD ', @veerunimi, ' ', @tyyp)
+        WHEN @tegevus = 'drop' THEN 
+            CONCAT('ALTER TABLE ', @tabelinimi, ' DROP COLUMN ', @veerunimi)
+    END;
+
+    PRINT @sqltegevus;  
+    EXEC(@sqltegevus);   
+END;
+
+EXEC muudatus 'add', 'klient', 'email', 'varchar(50)';
+
+EXEC muudatus 'drop', 'klient', 'email';
+
+SELECT *FROM klient
+```
