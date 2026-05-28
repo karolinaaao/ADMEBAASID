@@ -1,0 +1,265 @@
+CREATE DATABASE KAROLINAAID;
+USE KAROLINAAID;
+
+--  kasutaja
+CREATE TABLE kasutaja (
+    kasutaja_id INT PRIMARY KEY IDENTITY(1,1),
+    eesnimi VARCHAR(50),
+    perenimi VARCHAR(50),
+    email VARCHAR(150)
+);
+
+INSERT INTO kasutaja(eesnimi, perenimi, email)
+VALUES
+('Anna', 'Tamm', 'anna@gmail.com'),
+('Mark', 'Kask', 'mark@gmail.com'),
+('Liisa', 'Saar', 'liisa@gmail.com'),
+('Karl', 'Mets', 'karl@gmail.com'),
+('Eva', 'Põld', 'eva@gmail.com');
+
+SELECT *FROM kasutaja;
+
+-- kategooria
+CREATE TABLE kategooria (
+    kategooria_id INT PRIMARY KEY IDENTITY(1,1),
+    kategooria_nimi VARCHAR(50)
+);
+
+INSERT INTO kategooria(kategooria_nimi)
+VALUES ('Supp'), ('Magustoit'), ('Salat'), ('Praad'), ('Jook');
+
+SELECT *FROM kategooria;
+
+-- retsept 
+CREATE TABLE retsept (
+    retsept_id INT PRIMARY KEY IDENTITY(1,1),
+    retsepti_nimi VARCHAR(100),
+    kirjeldus VARCHAR(200),
+    juhend VARCHAR(500),
+    sisestatud_kp DATE,
+    kasutaja_id INT,
+    kategooria_id INT,
+    FOREIGN KEY (kasutaja_id) REFERENCES kasutaja(kasutaja_id),
+    FOREIGN KEY (kategooria_id) REFERENCES kategooria(kategooria_id)
+);
+
+INSERT INTO retsept
+(retsepti_nimi, kirjeldus, juhend, sisestatud_kp, kasutaja_id, kategooria_id)
+VALUES
+('Kartulisupp', 'Maitsev supp', 'Keeda 30 min', '2026-05-28', 1, 1),
+('Pannkoogid', 'Magus toit', 'Prae pannil', '2026-05-28', 2, 2),
+('Caesari salat', 'Kerge salat', 'Sega koostis', '2026-05-28', 3, 3),
+('Kanafilee', 'Kana roog', 'Küpseta ahjus', '2026-05-28', 4, 4),
+('Smuuti', 'Puuviljajook', 'Blendera', '2026-05-28', 5, 5);
+
+SELECT *FROM retsept;
+
+-- toiduaine
+CREATE TABLE toiduaine (
+    toiduaine_id INT PRIMARY KEY IDENTITY(1,1),
+    toiduaine_nimi VARCHAR(100)
+);
+
+INSERT INTO toiduaine(toiduaine_nimi)
+VALUES ('Kartul'), ('Kana'), ('Piim'), ('Suhkur'), ('Tomat');
+
+SELECT *FROM toiduaine;
+
+-- yhik
+CREATE TABLE yhik (
+    yhik_id INT PRIMARY KEY IDENTITY(1,1),
+    yhik_nimi VARCHAR(100)
+);
+
+INSERT INTO yhik(yhik_nimi)
+VALUES ('g'), ('kg'), ('ml'), ('tk'), ('spl');
+
+SELECT *FROM yhik;
+
+-- koostis
+CREATE TABLE koostis (
+    koostis_id INT PRIMARY KEY IDENTITY(1,1),
+    kogus INT,
+    retsept_retsept_id INT,
+    toiduaine_id INT,
+    yhik_id INT,
+    FOREIGN KEY (retsept_retsept_id) REFERENCES retsept(retsept_id),
+    FOREIGN KEY (toiduaine_id) REFERENCES toiduaine(toiduaine_id),
+    FOREIGN KEY (yhik_id) REFERENCES yhik(yhik_id)
+);
+
+INSERT INTO koostis(kogus, retsept_retsept_id, toiduaine_id, yhik_id)
+VALUES
+(5, 1, 1, 4),
+(1, 2, 3, 2),
+(2, 3, 5, 4),
+(1, 4, 2, 4),
+(500, 5, 3, 3);
+
+SELECT *FROM koostis;
+
+-- tehtud
+CREATE TABLE tehtud (
+    tehtud_id INT PRIMARY KEY IDENTITY(1,1),
+    tehtud_kp DATE,
+    retsept_id INT,
+    FOREIGN KEY (retsept_id) REFERENCES retsept(retsept_id)
+);
+
+INSERT INTO tehtud(tehtud_kp, retsept_id)
+VALUES
+('2026-05-28', 1),
+('2026-05-28', 2),
+('2026-05-28', 3),
+('2026-05-28', 4),
+('2026-05-28', 5);
+
+SELECT * FROM tehtud;
+
+--oma tabel 
+CREATE TABLE kommentaar (
+    kommentaar_id INT PRIMARY KEY IDENTITY(1,1),
+    kommentaar_tekst VARCHAR(300),
+    kommentaar_kp DATE,
+    retsept_id INT,
+
+    FOREIGN KEY (retsept_id)
+        REFERENCES retsept(retsept_id)
+);
+
+INSERT INTO kommentaar
+(kommentaar_tekst, kommentaar_kp, retsept_id)
+VALUES
+('Väga maitsev!', '2026-05-28', 1),
+('Super retsept', '2026-05-28', 2),
+('Teen veel', '2026-05-28', 3),
+('Hea õhtusöök', '2026-05-28', 4),
+('Lastele meeldis', '2026-05-28', 5);
+
+SELECT *FROM kommentaar;
+
+--protseduurid andmete kiireks lisamiseks.Kasutaja Lisamise protseduur
+
+CREATE PROCEDURE lisaKasutaja
+    @eesnimi VARCHAR(50),
+    @perenimi VARCHAR(50),
+    @email VARCHAR(150)
+AS
+BEGIN
+    INSERT INTO kasutaja(eesnimi, perenimi, email)
+    VALUES(@eesnimi, @perenimi, @email);
+END;
+
+EXEC lisaKasutaja 'Mari', 'Lepp', 'mari@gmail.com';
+
+--Retsepti Lisamise protseduur
+
+CREATE PROCEDURE lisaRetsept
+    @nimi VARCHAR(100),
+    @kirjeldus VARCHAR(200),
+    @juhend VARCHAR(500),
+    @kp DATE,
+    @kasutaja_id INT,
+    @kategooria_id INT
+AS
+BEGIN
+    INSERT INTO retsept
+    (retsepti_nimi, kirjeldus, juhend, sisestatud_kp,
+     kasutaja_id, kategooria_id)
+
+    VALUES
+    (@nimi, @kirjeldus, @juhend, @kp,
+     @kasutaja_id, @kategooria_id);
+END;
+
+
+--TABELI MUUTMISE PROTSEDUUR
+
+CREATE PROCEDURE muudaTabel
+    @tabeliNimi VARCHAR(100),
+    @valjaNimi VARCHAR(100),
+    @andmeTyyp VARCHAR(100)
+AS
+BEGIN
+    DECLARE @sql NVARCHAR(MAX);
+
+    SET @sql =
+    'ALTER TABLE ' + @tabeliNimi +
+    ' ADD ' + @valjaNimi + ' ' + @andmeTyyp;
+
+    EXEC sp_executesql @sql;
+END;
+
+EXEC muudaTabel
+'kasutaja',
+'telefon',
+'VARCHAR(20)';
+
+--SELECT - PARAMEETRID SEOTUD TABELITEST
+SELECT
+    kasutaja.eesnimi,
+    kasutaja.perenimi,
+    retsept.retsepti_nimi
+FROM kasutaja
+INNER JOIN retsept
+ON kasutaja.kasutaja_id = retsept.kasutaja_id;
+--Retsept ja kategooria
+SELECT
+    retsept.retsepti_nimi,
+    kategooria.kategooria_nimi
+FROM retsept
+INNER JOIN kategooria
+ON retsept.kategooria_id = kategooria.kategooria_id;
+--Retsept ja koostisosad
+SELECT
+    retsept.retsepti_nimi,
+    toiduaine.toiduaine_nimi,
+    koostis.kogus,
+    yhik.yhik_nimi
+FROM koostis
+INNER JOIN retsept
+ON koostis.retsept_retsept_id = retsept.retsept_id
+
+INNER JOIN toiduaine
+ON koostis.toiduaine_id = toiduaine.toiduaine_id
+
+INNER JOIN yhik
+ON koostis.yhik_id = yhik.yhik_id;
+
+--Kommentaarid retseptide kohta
+SELECT
+    retsept.retsepti_nimi,
+    kommentaar.kommentaar_tekst,
+    kommentaar.kommentaar_kp
+FROM kommentaar
+INNER JOIN retsept
+ON kommentaar.retsept_id = retsept.retsept_id;
+--Protseduurid kommentaarile
+CREATE PROCEDURE lisaKommentaar
+    @tekst VARCHAR(300),
+    @kp DATE,
+    @retsept_id INT
+AS
+BEGIN
+    INSERT INTO kommentaar
+    (kommentaar_tekst, kommentaar_kp, retsept_id)
+
+    VALUES
+    (@tekst, @kp, @retsept_id);
+END;
+
+EXEC lisaKommentaar
+'Väga hea!',
+'2026-05-28',
+1;
+
+--Kommentaari kustutamine ID järgi
+CREATE PROCEDURE kustutaKommentaar
+    @id INT
+AS
+BEGIN
+    DELETE FROM kommentaar
+    WHERE kommentaar_id = @id;
+END;
+
+EXEC kustutaKommentaar 1;
