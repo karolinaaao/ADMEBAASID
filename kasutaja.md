@@ -1,3 +1,6 @@
+
+
+[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | 
 ## SQL SERVER - kasutajate autentimine ja õiguste haödamine
 
 **SQL serveris kasutatakse kahte peamist autentimise tüüpi:**
