@@ -1,0 +1,130 @@
+CREATE DATABASE karolinaTrigger;
+use karolinaTrigger;
+
+--tabel
+CREATE TABLE raamatud(
+id INT PRIMARY KEY IDENTITY(1,1),
+pealkiri VARCHAR(100) NOT NULL,
+autor VARCHAR(100) NOT NULL,
+zanr VARCHAR(50),
+hind money
+)
+
+INSERT INTO Raamatud(pealkiri, autor, zanr, hind)
+VALUES ('sipsik', ' Eno Raua', 'muinasjutud', 20.00);
+
+SELECT * FROM raamatud;
+
+--logi tabel
+CREATE TABLE logi(
+id INT PRIMARY KEY IDENTITY(1,1),
+kuupaev DATETIME,
+kasutaja VARCHAR(30),
+toiming VARCHAR(100),
+andmed TEXT
+)
+
+SELECT * FROM logi;
+
+--TRIGGERID
+--INSERT
+
+CREATE TRIGGER raamatLisamine
+ON raamatud
+FOR INSERT
+AS
+INSERT INTO logi(kuupaev, kasutaja, toiming, andmed)
+SELECT
+GETDATE(),
+SYSTEM_USER,
+'uus raamat lisatud',
+CONCAT('pealkiri: ', inserted.pealkiri, ', autor: ', inserted.autor, ', zanr: ', inserted.zanr, ', hind: ', inserted.hind)
+FROM inserted;
+
+--insert kontroll
+INSERT INTO raamatud(pealkiri, autor, zanr, hind)
+VALUES ('Kevade', 'Luts', 'Romaan', 12.50);
+SELECT * FROM logi;
+SELECT * FROM raamatud;
+
+--Delete trigger
+CREATE TRIGGER raamatKustutamine
+ON raamatud
+FOR DELETE
+AS
+INSERT INTO logi(kuupaev, kasutaja, toiming, andmed)
+SELECT
+GETDATE(),
+SYSTEM_USER,
+'raamat kustutatud',
+CONCAT('pealkiri: ', deleted.pealkiri, ', autor: ', deleted.autor, ', zanr: ', deleted.zanr, ', hind: ', deleted.hind)
+FROM deleted;
+
+-- Delete kontroll 
+DELETE FROM raamatud WHERE id = 2;
+SELECT * FROM logi;
+SELECT * FROM raamatud;
+
+--Update trigger
+
+CREATE TRIGGER raamatUuendamine
+ON raamatud
+FOR UPDATE
+AS
+INSERT INTO logi(kuupaev, kasutaja, toiming, andmed)
+SELECT
+GETDATE(),
+SYSTEM_USER,
+'raamat muudetud',
+CONCAT('VANAD: ', deleted.pealkiri, ', ', deleted.autor, ', ', deleted.zanr, ', ', deleted.hind,  ' UUED: ', inserted.pealkiri, ', ', inserted.autor, ', ', inserted.zanr, ', ', inserted.hind )
+FROM deleted INNER JOIN inserted
+ON deleted.id = inserted.id;
+
+--update kontroll
+UPDATE raamatud SET pealkiri='sipsik123'
+WHERE pealkiri='sipsik';
+
+SELECT * FROM logi;
+SELECT * FROM raamatud;
+
+--insert + delete trigger
+
+CREATE TRIGGER raamatLisaKustuta
+ON raamatud
+FOR INSERT, DELETE
+AS
+BEGIN
+SET NOCOUNT ON;
+	INSERT INTO logi(kuupaev, kasutaja, toiming, andmed)
+
+	SELECT
+	GETDATE(),
+	SYSTEM_USER,
+	'on tehtud INSERT käsk',
+	CONCAT('pealkiri: ', inserted.pealkiri, ', autor: ', inserted.autor, ', zanr: ', inserted.zanr, ', hind: ', inserted.hind)
+	FROM inserted
+
+	UNION ALL
+
+	SELECT
+	GETDATE(),
+	SYSTEM_USER,
+	'on tehtud DELETE käsk',
+	CONCAT('pealkiri: ', deleted.pealkiri, ', autor: ', deleted.autor, ', zanr: ', deleted.zanr,', hind: ', deleted.hind)
+	FROM deleted;
+END;
+
+DISABLE TRIGGER raamatLisamine ON Raamatud;
+
+DISABLE TRIGGER raamatKustutamine ON Raamatud;
+
+
+--kasutaja karolinaRaamat, parool 12345
+
+GRANT SELECT, INSERT, DELETE ON raamatud TO karolinaRaamat;
+
+DENY SELECT,DELETE ON logi TO karolinaRaamat;
+
+EXEC sp_helptext 'raamatUuendamine';
+EXEC sp_helptext 'raamatLisamine';
+EXEC sp_helptext 'raamatLisaKustuta';
