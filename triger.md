@@ -1,3 +1,6 @@
+
+
+[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | 
 ## Trigger - päästik
 ### SQL triggerid on spetsiaalsed andmebaasi objektid, mis käivituvad automaatselt, kui toimub teatud sündmus (nt INSERT, UPDATE või DELETE)
 ```sql
