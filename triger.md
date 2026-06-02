@@ -126,3 +126,6 @@ GRANT SELECT, INSERT, DELETE ON linnad TO sekretarKarolina;
 DENY SELECT,DELETE ON logi TO sekretarKarolina;
 
 ```
+
+<img width="651" height="263" alt="{99144824-00D3-4F75-A4AB-4BA42C2A55F2}" src="https://github.com/user-attachments/assets/9a4e97d4-73be-4c2e-ad8d-53b4be2522c1" />
+
