@@ -1,3 +1,6 @@
+
+
+[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | 
 ```sql
 --1.categories
 create table categories(
