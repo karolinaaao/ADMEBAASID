@@ -1,17 +1,16 @@
-CREATE DATABASE KAROLINAAID;
-USE KAROLINAAID;
+CREATE DATABASE karolinaID;
+USE karolinaID;
 
 --  kasutaja
 CREATE TABLE kasutaja (
-    kasutaja_id INT PRIMARY KEY IDENTITY(1,1),
-    eesnimi VARCHAR(50),
-    perenimi VARCHAR(50),
-    email VARCHAR(150)
-);
+kasutaja_id INT PRIMARY KEY IDENTITY(1,1),
+eesnimi VARCHAR(50),
+perenimi VARCHAR(50),
+email VARCHAR(150)
+)
 
 INSERT INTO kasutaja(eesnimi, perenimi, email)
-VALUES
-('Anna', 'Tamm', 'anna@gmail.com'),
+VALUES ('Anna', 'Tamm', 'anna@gmail.com'),
 ('Mark', 'Kask', 'mark@gmail.com'),
 ('Liisa', 'Saar', 'liisa@gmail.com'),
 ('Karl', 'Mets', 'karl@gmail.com'),
@@ -21,9 +20,9 @@ SELECT *FROM kasutaja;
 
 -- kategooria
 CREATE TABLE kategooria (
-    kategooria_id INT PRIMARY KEY IDENTITY(1,1),
-    kategooria_nimi VARCHAR(50)
-);
+kategooria_id INT PRIMARY KEY IDENTITY(1,1),
+kategooria_nimi VARCHAR(50)
+)
 
 INSERT INTO kategooria(kategooria_nimi)
 VALUES ('Supp'), ('Magustoit'), ('Salat'), ('Praad'), ('Jook');
@@ -32,21 +31,19 @@ SELECT *FROM kategooria;
 
 -- retsept 
 CREATE TABLE retsept (
-    retsept_id INT PRIMARY KEY IDENTITY(1,1),
-    retsepti_nimi VARCHAR(100),
-    kirjeldus VARCHAR(200),
-    juhend VARCHAR(500),
-    sisestatud_kp DATE,
-    kasutaja_id INT,
-    kategooria_id INT,
-    FOREIGN KEY (kasutaja_id) REFERENCES kasutaja(kasutaja_id),
-    FOREIGN KEY (kategooria_id) REFERENCES kategooria(kategooria_id)
-);
+retsept_id INT PRIMARY KEY IDENTITY(1,1),
+retsepti_nimi VARCHAR(100),
+kirjeldus VARCHAR(200),
+juhend VARCHAR(500),
+sisestatud_kp DATE,
+kasutaja_id INT,
+kategooria_id INT,
+FOREIGN KEY (kasutaja_id) REFERENCES kasutaja(kasutaja_id),
+FOREIGN KEY (kategooria_id) REFERENCES kategooria(kategooria_id)
+)
 
-INSERT INTO retsept
-(retsepti_nimi, kirjeldus, juhend, sisestatud_kp, kasutaja_id, kategooria_id)
-VALUES
-('Kartulisupp', 'Maitsev supp', 'Keeda 30 min', '2026-05-28', 1, 1),
+INSERT INTO retsept (retsepti_nimi, kirjeldus, juhend, sisestatud_kp, kasutaja_id, kategooria_id)
+VALUES ('Kartulisupp', 'Maitsev supp', 'Keeda 30 min', '2026-05-28', 1, 1),
 ('Pannkoogid', 'Magus toit', 'Prae pannil', '2026-05-28', 2, 2),
 ('Caesari salat', 'Kerge salat', 'Sega koostis', '2026-05-28', 3, 3),
 ('Kanafilee', 'Kana roog', 'Küpseta ahjus', '2026-05-28', 4, 4),
@@ -58,7 +55,7 @@ SELECT *FROM retsept;
 CREATE TABLE toiduaine (
     toiduaine_id INT PRIMARY KEY IDENTITY(1,1),
     toiduaine_nimi VARCHAR(100)
-);
+)
 
 INSERT INTO toiduaine(toiduaine_nimi)
 VALUES ('Kartul'), ('Kana'), ('Piim'), ('Suhkur'), ('Tomat');
@@ -66,10 +63,11 @@ VALUES ('Kartul'), ('Kana'), ('Piim'), ('Suhkur'), ('Tomat');
 SELECT *FROM toiduaine;
 
 -- yhik
+
 CREATE TABLE yhik (
     yhik_id INT PRIMARY KEY IDENTITY(1,1),
     yhik_nimi VARCHAR(100)
-);
+)
 
 INSERT INTO yhik(yhik_nimi)
 VALUES ('g'), ('kg'), ('ml'), ('tk'), ('spl');
@@ -77,20 +75,20 @@ VALUES ('g'), ('kg'), ('ml'), ('tk'), ('spl');
 SELECT *FROM yhik;
 
 -- koostis
+
 CREATE TABLE koostis (
-    koostis_id INT PRIMARY KEY IDENTITY(1,1),
-    kogus INT,
-    retsept_retsept_id INT,
-    toiduaine_id INT,
-    yhik_id INT,
-    FOREIGN KEY (retsept_retsept_id) REFERENCES retsept(retsept_id),
-    FOREIGN KEY (toiduaine_id) REFERENCES toiduaine(toiduaine_id),
-    FOREIGN KEY (yhik_id) REFERENCES yhik(yhik_id)
-);
+koostis_id INT PRIMARY KEY IDENTITY(1,1),
+kogus INT,
+retsept_retsept_id INT,
+toiduaine_id INT,
+yhik_id INT,
+FOREIGN KEY (retsept_retsept_id) REFERENCES retsept(retsept_id),
+FOREIGN KEY (toiduaine_id) REFERENCES toiduaine(toiduaine_id),
+FOREIGN KEY (yhik_id) REFERENCES yhik(yhik_id)
+)
 
 INSERT INTO koostis(kogus, retsept_retsept_id, toiduaine_id, yhik_id)
-VALUES
-(5, 1, 1, 4),
+VALUES (5, 1, 1, 4),
 (1, 2, 3, 2),
 (2, 3, 5, 4),
 (1, 4, 2, 4),
@@ -99,16 +97,16 @@ VALUES
 SELECT *FROM koostis;
 
 -- tehtud
+
 CREATE TABLE tehtud (
     tehtud_id INT PRIMARY KEY IDENTITY(1,1),
     tehtud_kp DATE,
     retsept_id INT,
     FOREIGN KEY (retsept_id) REFERENCES retsept(retsept_id)
-);
+)
 
 INSERT INTO tehtud(tehtud_kp, retsept_id)
-VALUES
-('2026-05-28', 1),
+VALUES ('2026-05-28', 1),
 ('2026-05-28', 2),
 ('2026-05-28', 3),
 ('2026-05-28', 4),
@@ -116,21 +114,22 @@ VALUES
 
 SELECT * FROM tehtud;
 
---oma tabel 
-CREATE TABLE kommentaar (
-    kommentaar_id INT PRIMARY KEY IDENTITY(1,1),
-    kommentaar_tekst VARCHAR(300),
-    kommentaar_kp DATE,
-    retsept_id INT,
 
-    FOREIGN KEY (retsept_id)
-        REFERENCES retsept(retsept_id)
-);
+--oma tabel 
+
+CREATE TABLE kommentaar (
+kommentaar_id INT PRIMARY KEY IDENTITY(1,1),
+kommentaar_tekst VARCHAR(300),
+kommentaar_kp DATE,
+retsept_id INT,
+
+FOREIGN KEY (retsept_id)
+REFERENCES retsept(retsept_id)
+)
 
 INSERT INTO kommentaar
 (kommentaar_tekst, kommentaar_kp, retsept_id)
-VALUES
-('Väga maitsev!', '2026-05-28', 1),
+VALUES ('Väga maitsev!', '2026-05-28', 1),
 ('Super retsept', '2026-05-28', 2),
 ('Teen veel', '2026-05-28', 3),
 ('Hea õhtusöök', '2026-05-28', 4),
@@ -139,21 +138,21 @@ VALUES
 SELECT *FROM kommentaar;
 
 --protseduurid andmete kiireks lisamiseks.Kasutaja Lisamise protseduur
-
 CREATE PROCEDURE lisaKasutaja
-    @eesnimi VARCHAR(50),
-    @perenimi VARCHAR(50),
-    @email VARCHAR(150)
+    @eesnimi VARCHAR(10),
+    @perenimi VARCHAR(10),
+    @email VARCHAR(15)
 AS
 BEGIN
     INSERT INTO kasutaja(eesnimi, perenimi, email)
     VALUES(@eesnimi, @perenimi, @email);
+    SELECT * FROM kasutaja;
 END;
 
 EXEC lisaKasutaja 'Mari', 'Lepp', 'mari@gmail.com';
 
---Retsepti Lisamise protseduur
 
+--Retsepti Lisamise protseduur
 CREATE PROCEDURE lisaRetsept
     @nimi VARCHAR(100),
     @kirjeldus VARCHAR(200),
@@ -166,11 +165,14 @@ BEGIN
     INSERT INTO retsept
     (retsepti_nimi, kirjeldus, juhend, sisestatud_kp,
      kasutaja_id, kategooria_id)
-
     VALUES
     (@nimi, @kirjeldus, @juhend, @kp,
      @kasutaja_id, @kategooria_id);
+
+    SELECT * FROM retsept;
 END;
+
+EXEC lisaRetsept 'Test Retsept', 'Kirjeldus', 'Juhend', '2026-06-02', 1, 1;
 
 
 --TABELI MUUTMISE PROTSEDUUR
@@ -190,10 +192,9 @@ BEGIN
     EXEC sp_executesql @sql;
 END;
 
-EXEC muudaTabel
-'kasutaja',
-'telefon',
-'VARCHAR(20)';
+EXEC muudaTabel 'kasutaja', 'telefon', 'VARCHAR(20)';
+
+
 
 --SELECT - PARAMEETRID SEOTUD TABELITEST
 SELECT
@@ -235,17 +236,17 @@ FROM kommentaar
 INNER JOIN retsept
 ON kommentaar.retsept_id = retsept.retsept_id;
 --Protseduurid kommentaarile
+
 CREATE PROCEDURE lisaKommentaar
     @tekst VARCHAR(300),
     @kp DATE,
     @retsept_id INT
 AS
 BEGIN
-    INSERT INTO kommentaar
-    (kommentaar_tekst, kommentaar_kp, retsept_id)
+    INSERT INTO kommentaar(kommentaar_tekst, kommentaar_kp, retsept_id)
+    VALUES(@tekst, @kp, @retsept_id);
 
-    VALUES
-    (@tekst, @kp, @retsept_id);
+    SELECT * FROM kommentaar;
 END;
 
 EXEC lisaKommentaar
@@ -254,12 +255,43 @@ EXEC lisaKommentaar
 1;
 
 --Kommentaari kustutamine ID järgi
+
 CREATE PROCEDURE kustutaKommentaar
     @id INT
 AS
 BEGIN
     DELETE FROM kommentaar
     WHERE kommentaar_id = @id;
+
+    
+    SELECT * FROM kommentaar;
 END;
 
 EXEC kustutaKommentaar 1;
+
+--Kasutajate loomine
+-- staff  psswd 12345
+
+GRANT SELECT ON kasutaja TO staff;
+
+GRANT SELECT, INSERT ON toiduaine TO staff;
+DENY UPDATE, DELETE ON toiduaine TO staff;
+
+GRANT SELECT, INSERT ON kategooria TO staff;
+DENY UPDATE, DELETE ON kategooria TO staff;
+
+--manager psswd 12345
+
+GRANT SELECT ON kasutaja TO manager;
+DENY INSERT ON kasutaja TO manager;
+
+GRANT SELECT ON toiduaine TO manager;
+DENY INSERT ON toiduaine TO manager;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON retsept TO manager;
+GRANT SELECT, INSERT, UPDATE, DELETE ON koostis TO manager;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON kategooria TO manager;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON kommentaar TO manager;
+GRANT SELECT, INSERT, UPDATE, DELETE ON tehtud TO manager;
