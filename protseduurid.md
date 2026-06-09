@@ -1,6 +1,6 @@
 
 
-[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | 
+[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | [keys](keys.md)
 ## SQL protseduur - 
 store procedure - salvestatud protseduurid - sama mis on fumnktsoonid programmeerimises, mingi tegevus mis on salvestatud 
 andmebaasi, ja mida saab automaatselt teha (INSERT, UPDATE, SELECT, DELETE).
