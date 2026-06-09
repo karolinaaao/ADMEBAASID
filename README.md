@@ -1,6 +1,7 @@
 ## KAROLINA ANDMEBAASIDE KONSPEKT
 
-[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | 
+
+[pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | [keys](keys.md)
 
 
 **SQL - structured Query Language - struktureeritud päringukeel**
