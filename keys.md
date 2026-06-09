@@ -1,3 +1,6 @@
+
+ 
+ [pöhimõisted](README.md) | [andmebaassales](andmebaassales.md) | [kasutaja](kasutaja.md) | [protseduurid](protseduurid.md) | [triger](triger.md) | [keys](keys.md)
  # Primary Key 
 Definitsioon: Veerg või veergude kombinatsioon, mis identifitseerib iga rea üheselt.
 Milleks kasutatakse: Tagab, et tabelis pole duplikaate.
