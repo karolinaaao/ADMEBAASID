@@ -98,6 +98,28 @@ CREATE TABLE Toode (
 Definitsioon: Kõik võimalikud võtmed, mis võiksid olla Primary Key.
 Milleks kasutatakse: Valitakse nende seast Primary Key.
 Erinevus: Candidate Key ei sisalda üleliigseid veerge (erinevalt Superkey-st).
+```sql
+CREATE TABLE Raamat (
+    id INT,
+    isbn VARCHAR(20),
+    UNIQUE(id),
+    UNIQUE(isbn)
+);
+```
+<img width="452" height="236" alt="{1A517865-6919-4C08-BFED-1B7717E88ED9}" src="https://github.com/user-attachments/assets/7c26052d-0294-47b9-9bbd-98330f6385c0" />
 
+# Alternate Key
+Definitsioon: Candidate Key, mida EI valitud Primary Key-ks.
+Milleks kasutatakse: Alternatiivne unikaalne identifikaator.
+Erinevus: Primary Key on üks, Alternate Key-sid võib olla mitu.
+
+```sql
+CREATE TABLE Inimene (
+    id INT PRIMARY KEY,
+    isikukood VARCHAR(20) UNIQUE -- alternate key
+);
+```
+
+<img width="489" height="270" alt="{94943AB2-4BD4-4459-BC67-240BB77E189C}" src="https://github.com/user-attachments/assets/58c79b6c-bffa-447a-99fa-f69ed17d8947" />
 
 
